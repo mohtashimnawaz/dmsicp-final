@@ -1,31 +1,15 @@
-import { useState } from 'react';
-import { dms_icp_backend } from 'declarations/dms_icp_backend';
+import React from "react";
+import CreateSwitch from "./components/CreateSwitch";
+import CheckInButton from "./components/CheckInButton";
+import StatusDisplay from "./components/StatusDisplay";
 
-function App() {
-  const [greeting, setGreeting] = useState('');
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    dms_icp_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
-
+export default function App() {
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <div>
+      <h1>ICP Dead Man's Switch</h1>
+      <CreateSwitch />
+      <CheckInButton />
+      <StatusDisplay />
+    </div>
   );
 }
-
-export default App;

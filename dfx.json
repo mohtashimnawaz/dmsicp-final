@@ -4,6 +4,7 @@
       "candid": "src/dms_icp_backend/dms_icp_backend.did",
       "package": "dms_icp_backend",
       "type": "rust"
+      
     },
     "dms_icp_frontend": {
       "dependencies": [
