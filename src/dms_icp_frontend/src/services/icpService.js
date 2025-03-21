@@ -1,5 +1,7 @@
 import { Actor } from "@dfinity/agent";
-import { idlFactory, canisterId } from "../../../declarations/dms_icp_backend/index";
+import { idlFactory, canisterId } from "../../../declarations/dms_icp_backend";
+
+let dmsActor = null;
 
 export async function connectPlug() {
     if (!window.ic || !window.ic.plug) {
@@ -8,13 +10,11 @@ export async function connectPlug() {
     }
 
     try {
-        // Request user to connect Plug wallet
         await window.ic.plug.requestConnect({
-            whitelist: [canisterId], // Your DMS canister
-            host: "https://icp0.io", // Use "http://localhost:4943" for local
+            whitelist: [canisterId], 
+            host: "https://icp0.io", 
         });
 
-        // Get user Principal ID
         const principal = await window.ic.plug.agent.getPrincipal();
         console.log("Connected with Plug! Principal:", principal.toText());
         
@@ -25,7 +25,6 @@ export async function connectPlug() {
     }
 }
 
-// Create an authenticated actor using Plug
 export async function createAuthenticatedActor() {
     if (!window.ic || !window.ic.plug) {
         console.error("Plug Wallet is not installed.");
@@ -38,23 +37,28 @@ export async function createAuthenticatedActor() {
         return null;
     }
 
-    return await window.ic.plug.createActor({
+    dmsActor = await window.ic.plug.createActor({
         canisterId,
         interfaceFactory: idlFactory,
     });
+
+    console.log("DMS Actor initialized:", dmsActor);
+    return dmsActor;
 }
 
 // Function to create a switch with Plug authentication
 export async function createSwitch(timeout, message, recipient, icpAmount) {
-    const actor = await createAuthenticatedActor();
-    if (!actor) {
+    if (!dmsActor) {
+        dmsActor = await createAuthenticatedActor();
+    }
+    if (!dmsActor) {
         console.error("Failed to create Plug-authenticated actor.");
         return;
     }
 
     try {
         const owner = await window.ic.plug.agent.getPrincipal();
-        const response = await actor.create_switch(owner.toText(), timeout, message, recipient, icpAmount);
+        const response = await dmsActor.create_switch(owner.toText(), timeout, message, recipient, icpAmount);
         console.log("Switch created:", response);
         return response;
     } catch (error) {
@@ -62,3 +66,6 @@ export async function createSwitch(timeout, message, recipient, icpAmount) {
         return null;
     }
 }
+
+// Export the initialized actor
+export { dmsActor };
