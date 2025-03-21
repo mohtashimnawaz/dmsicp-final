@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { dmsActor } from "../services/icpService";
+import { Actor } from "../services/icpService";
 
 export default function CreateSwitch() {
   const [owner, setOwner] = useState("");
@@ -10,7 +10,7 @@ export default function CreateSwitch() {
 
   const createSwitch = async () => {
     try {
-      await dmsActor.create_switch(owner, Number(timeout), message, recipient, Number(icpAmount));
+      await Actor.create_switch(owner, Number(timeout), message, recipient, Number(icpAmount));
       alert("Switch Created!");
     } catch (error) {
       console.error("Error creating switch:", error);

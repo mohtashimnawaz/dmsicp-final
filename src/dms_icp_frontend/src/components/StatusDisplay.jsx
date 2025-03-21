@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { dmsActor } from "../services/icpService";
+import { Actor } from "../services/icpService";
 
 export default function StatusDisplay() {
   const [owner, setOwner] = useState("");
